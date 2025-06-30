@@ -2,8 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter
 import os
+import json
   
 # 1) Carico i dati e creo cartella per output
+'''
 data = [
     ("2025-05-30 20:39", 62),
     ("2025-06-01 20:48", 66.7),
@@ -28,6 +30,10 @@ data = [
     ("2025-06-29 17:13", 21.4),
     ("2025-06-30 09:00", 23)
 ]
+'''
+with open("dati.json", "r") as file:
+    data = json.load(file)
+
 os.makedirs("grafici", exist_ok=True)
 
 df = pd.DataFrame(data, columns=["timestamp", "hours"])
