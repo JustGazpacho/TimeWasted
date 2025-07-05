@@ -28,6 +28,14 @@
   {"timestamp": "2025-07-01 17:55", "hours": 29.2},
   {"timestamp": "2025-07-02 15:58", "hours": 30.0},
   {"timestamp": "2025-07-03 23:15", "hours": 28.6},
-  {"timestamp": "2025-07-04 09:06", "hours": 29.6}
+  {"timestamp": "2025-07-03 09:41", "hours": 30.5},
+  {"timestamp": "2025-07-03 12:12", "hours": 31.5},
+  {"timestamp": "2025-07-04 00:36", "hours": 33.2},
+  {"timestamp": "2025-07-05 09:08", "hours": 33},
+  {"timestamp": "2025-07-05 16:40", "hours": 33.4},
+  {"timestamp": "2025-07-05 17:31", "hours": 34},
+  {"timestamp": "2025-07-05 19:34", "hours": 34.6},
+  {"timestamp": "2025-07-05 19:46", "hours": 35},
+  {"timestamp": "2025-07-05 20:19", "hours": 35.6},
+  {"timestamp": "2025-07-05 23:58", "hours": 39}
 ]
-
