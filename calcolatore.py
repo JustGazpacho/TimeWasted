@@ -1,89 +1,81 @@
-'''import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.dates import DateFormatter
-import os
-import json
-  
-# 1) Carico i dati e creo cartella per output
-with open("dati.json", "r") as file:
-    data = json.load(file)
-
-os.makedirs("grafici", exist_ok=True)
-
-df = pd.DataFrame(data, columns=["timestamp", "hours"])
-df["timestamp"] = pd.to_datetime(df["timestamp"])
-df = df.set_index("timestamp").sort_index()
-
-# 2) Calcolo delta giornaliero (variazione netta del rolling window)
-df["delta"] = df["hours"].diff()
-
-
-# 3) Grafico #1: trend delle ore
-fig, ax = plt.subplots(figsize=(10,4))
-ax.plot(df.index, df["hours"], marker="o", linestyle="-", color="#1f77b4")
-ax.set_title("Andamento delle ore (rolling 14 giorni)")
-ax.set_ylabel("Ore nelle ultime 2 settimane")
-ax.xaxis.set_major_formatter(DateFormatter("%d/%m"))
-ax.grid(alpha=0.3)
-# 3.5) salvo
-plt.tight_layout()
-fig.savefig("grafici/grafico_andamento_ore.png", dpi=300, format='png')
-
-
-# 4) Grafico #2: ore aggiunte (o rimosse) ogni registrazione
-fig, ax = plt.subplots(figsize=(10, 4))
-ax.plot(df.index, df["delta_rolling"], marker="o", linestyle="-", color="#ff7f0e")
-ax.set_title("Delta giornaliero del rolling 14 giorni")
-ax.set_ylabel("Variazione rispetto al giorno precedente")
-ax.axhline(0, color="gray", linestyle="--", linewidth=0.8)
-ax.xaxis.set_major_formatter(DateFormatter("%d/%m"))
-ax.grid(alpha=0.3)
-plt.tight_layout()
-fig.savefig("grafici/grafico_delta_rolling.png", dpi=300, format='png')
-'''
-# seconda iterazione
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib.dates import DateFormatter
+import matplotlib.dates as mdates
+from matplotlib.dates import DateFormatter, DayLocator, HourLocator
+from datetime import timedelta
 import os
 import json
 
-# 1) Carico i dati e creo cartella per output
+# Carica i dati dal file JSON
 with open("dati.json", "r") as file:
     data = json.load(file)
 
-os.makedirs("grafici", exist_ok=True)
-
-df = pd.DataFrame(data, columns=["timestamp", "hours"])
+# Crea il DataFrame con indice temporale ordinato
+df = pd.DataFrame(data)
 df["timestamp"] = pd.to_datetime(df["timestamp"])
 df = df.set_index("timestamp").sort_index()
 
-# 2) Calcolo rolling 14 giorni e delta giornaliero del rolling
-df["rolling_14d"] = df["hours"].rolling(window=14).sum()
-df["delta_rolling"] = df["rolling_14d"].diff()
+# Calcola la differenza tra snapshot successivi
+df["delta_hours"] = df["hours"].diff()
 
-# 3) Grafico #1: trend delle ore
-fig, ax = plt.subplots(figsize=(10, 4))
-ax.plot(df.index, df["rolling_14d"], marker="o", linestyle="-", color="#1f77b4")
-ax.set_title("Andamento delle ore (rolling 14 giorni)")
-ax.set_ylabel("Ore nelle ultime 2 settimane")
-ax.xaxis.set_major_formatter(DateFormatter("%d/%m"))
-ax.grid(alpha=0.3)
+# Calcola la somma cumulativa delle differenze
+df["cumulative_delta"] = df["delta_hours"].cumsum()
+
+# Crea la cartella 'grafici' se non esiste
+os.makedirs("grafici", exist_ok=True)
+
+# Formatter asse X: giorno e ora su due righe
+x_fmt = DateFormatter("%d/%m\n%H:%M")
+
+# Margine ridotto sull'asse X
+x_buffer = timedelta(hours=2)
+x_min = df.index.min() + x_buffer
+x_max = df.index.max() - x_buffer
+
+# Calcolo dei limiti Y con margine personalizzabile
+def get_y_limits(series, margin=0.05):
+    y_min, y_max = series.min(), series.max()
+    pad = (y_max - y_min) * margin
+    return y_min - pad, y_max + pad
+
+# Funzione standard per configurare asse X con griglia precisa
+def configure_x_axis(ax):
+    ax.set_xlim(x_min, x_max)
+    ax.xaxis.set_major_locator(DayLocator(interval=1))             # griglia ogni giorno a mezzanotte
+    ax.xaxis.set_minor_locator(HourLocator(interval=6))            # griglia leggera ogni 6 ore
+    ax.xaxis.set_major_formatter(x_fmt)
+    ax.tick_params(axis='x', rotation=0)  # verticale per evitare sovrapposizione
+    ax.grid(which="major", axis='x', alpha=0.3)
+    ax.grid(which="minor", axis='x', linestyle=":", alpha=0.15)
+
+# Grafico 1 – Ore registrate da Steam
+fig, ax = plt.subplots(figsize=(20, 6))
+ax.plot(df.index, df["hours"], marker="o", linestyle="-", color="#1f77b4")
+ax.set_title("Ore registrate (Steam: ultime 2 settimane)")
+ax.set_ylabel("Ore totali")
+ax.set_ylim(*get_y_limits(df["hours"]))
+configure_x_axis(ax)
 plt.tight_layout()
-fig.savefig("grafici/grafico_andamento_ore.png", dpi=300, format='png')
+fig.savefig("grafici/01_snapshot_ore.png", dpi=300)
 
-# 4) Grafico #2: variazione giornaliera del rolling
-fig, ax = plt.subplots(figsize=(10, 4))
-ax.plot(df.index, df["delta_rolling"], marker="o", linestyle="-", color="#ff7f0e")
-ax.set_title("Delta giornaliero del rolling 14 giorni")
-ax.set_ylabel("Variazione rispetto al giorno precedente")
+# Grafico 2 – Delta tra snapshot consecutivi
+fig, ax = plt.subplots(figsize=(20, 6))
+ax.plot(df.index, df["delta_hours"], marker="o", linestyle="-", color="#ff7f0e")
+ax.set_title("Differenza di ore tra snapshot consecutivi")
+ax.set_ylabel("Δ ore")
 ax.axhline(0, color="gray", linestyle="--", linewidth=0.8)
-ax.xaxis.set_major_formatter(DateFormatter("%d/%m"))
-ax.grid(alpha=0.3)
+ax.set_ylim(*get_y_limits(df["delta_hours"]))
+configure_x_axis(ax)
 plt.tight_layout()
-fig.savefig("grafici/grafico_delta_rolling.png", dpi=300, format='png')
+fig.savefig("grafici/02_delta_ore.png", dpi=300)
 
-'''
+# Grafico 3 – Ore cumulative stimate
+fig, ax = plt.subplots(figsize=(20, 6))
+ax.plot(df.index, df["cumulative_delta"], marker="o", linestyle="-", color="#2ca02c")
+ax.set_title("Tempo di gioco cumulativo stimato dalle variazioni")
+ax.set_ylabel("Ore totali aggiunte")
+ax.axhline(0, color="gray", linestyle="--", linewidth=0.8)
+ax.set_ylim(*get_y_limits(df["cumulative_delta"]))
+configure_x_axis(ax)
 plt.tight_layout()
-plt.show()
-'''
+fig.savefig("grafici/03_delta_cumulativo.png", dpi=300)
