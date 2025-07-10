@@ -50,7 +50,9 @@ def configure_x_axis(ax):
 
 # Grafico 1 – Ore registrate da Steam
 fig, ax = plt.subplots(figsize=(40,12))
-ax.plot(df.index, df["hours"], marker="o", linestyle="-", color="#1f77b4")
+#ax.plot(df.index, df["hours"], marker="o", linestyle="-", color="#1f77b4")
+plot_df = df[(df.index >= df.index.min()) & (df.index <= df.index.max())]
+ax.plot(plot_df.index, plot_df["hours"], marker="o", linestyle="-", color="#1f77b4")
 ax.set_title("Ore registrate (Steam: ultime 2 settimane)")
 ax.set_ylabel("Ore totali")
 ax.set_ylim(*get_y_limits(df["hours"]))
@@ -60,7 +62,9 @@ fig.savefig("grafici/01_snapshot_ore.png", dpi=300)
 
 # Grafico 2 – Delta tra snapshot consecutivi
 fig, ax = plt.subplots(figsize=(40, 12))
-ax.plot(df.index, df["delta_hours"], marker="o", linestyle="-", color="#ff7f0e")
+#ax.plot(df.index, df["delta_hours"], marker="o", linestyle="-", color="#ff7f0e")
+plot_df = df[(df.index >= df.index.min()) & (df.index <= df.index.max())]
+ax.plot(plot_df.index, plot_df["hours"], marker="o", linestyle="-", color="#ff7f0e")
 ax.set_title("Differenza di ore tra snapshot consecutivi")
 ax.set_ylabel("Δ ore")
 ax.axhline(0, color="gray", linestyle="--", linewidth=0.8)
@@ -71,7 +75,9 @@ fig.savefig("grafici/02_delta_ore.png", dpi=300)
 
 # Grafico 3 – Ore cumulative stimate
 fig, ax = plt.subplots(figsize=(40, 12))
-ax.plot(df.index, df["cumulative_delta"], marker="o", linestyle="-", color="#2ca02c")
+#ax.plot(df.index, df["cumulative_delta"], marker="o", linestyle="-", color="#2ca02c")
+plot_df = df[(df.index >= df.index.min()) & (df.index <= df.index.max())]
+ax.plot(plot_df.index, plot_df["hours"], marker="o", linestyle="-", color="#2ca02c")
 ax.set_title("Tempo di gioco cumulativo stimato dalle variazioni")
 ax.set_ylabel("Ore totali aggiunte")
 ax.axhline(0, color="gray", linestyle="--", linewidth=0.8)
