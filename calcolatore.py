@@ -28,7 +28,7 @@ os.makedirs("grafici", exist_ok=True)
 x_fmt = DateFormatter("%d/%m\n%H:%M")
 
 # Margine ridotto sull'asse X
-x_buffer = timedelta(hours=2)
+x_buffer = timedelta(days=2,hours=4)
 x_min = df.index.min() + x_buffer
 x_max = df.index.max() - x_buffer
 
