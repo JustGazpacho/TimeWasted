@@ -49,7 +49,7 @@ def configure_x_axis(ax):
     ax.grid(which="minor", axis='x', linestyle=":", alpha=0.15)
 
 # Grafico 1 – Ore registrate da Steam
-fig, ax = plt.subplots(figsize=(20, 6))
+fig, ax = plt.subplots(figsize=(40,12))
 ax.plot(df.index, df["hours"], marker="o", linestyle="-", color="#1f77b4")
 ax.set_title("Ore registrate (Steam: ultime 2 settimane)")
 ax.set_ylabel("Ore totali")
@@ -59,7 +59,7 @@ plt.tight_layout()
 fig.savefig("grafici/01_snapshot_ore.png", dpi=300)
 
 # Grafico 2 – Delta tra snapshot consecutivi
-fig, ax = plt.subplots(figsize=(20, 6))
+fig, ax = plt.subplots(figsize=(40, 12))
 ax.plot(df.index, df["delta_hours"], marker="o", linestyle="-", color="#ff7f0e")
 ax.set_title("Differenza di ore tra snapshot consecutivi")
 ax.set_ylabel("Δ ore")
@@ -70,7 +70,7 @@ plt.tight_layout()
 fig.savefig("grafici/02_delta_ore.png", dpi=300)
 
 # Grafico 3 – Ore cumulative stimate
-fig, ax = plt.subplots(figsize=(20, 6))
+fig, ax = plt.subplots(figsize=(40, 12))
 ax.plot(df.index, df["cumulative_delta"], marker="o", linestyle="-", color="#2ca02c")
 ax.set_title("Tempo di gioco cumulativo stimato dalle variazioni")
 ax.set_ylabel("Ore totali aggiunte")
