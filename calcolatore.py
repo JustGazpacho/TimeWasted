@@ -49,7 +49,7 @@ def configure_x_axis(ax):
     ax.grid(which="minor", axis='x', linestyle=":", alpha=0.15)
 
 # Grafico 1 – Ore registrate da Steam
-fig, ax = plt.subplots(figsize=(40,12))
+fig, ax = plt.subplots(figsize=(80,24))
 #ax.plot(df.index, df["hours"], marker="o", linestyle="-", color="#1f77b4")
 plot_df = df[(df.index >= df.index.min()) & (df.index <= df.index.max())]
 ax.plot(plot_df.index, plot_df["hours"], marker="o", linestyle="-", color="#1f77b4")
@@ -61,7 +61,7 @@ plt.tight_layout()
 fig.savefig("grafici/01_snapshot_ore.png", dpi=300)
 
 # Grafico 2 – Delta tra snapshot consecutivi
-fig, ax = plt.subplots(figsize=(40, 12))
+fig, ax = plt.subplots(figsize=(80,24))
 #ax.plot(df.index, df["delta_hours"], marker="o", linestyle="-", color="#ff7f0e")
 plot_df = df[(df.index >= df.index.min()) & (df.index <= df.index.max())]
 #ax.plot(plot_df.index, plot_df["hours"], marker="o", linestyle="-", color="#ff7f0e")
@@ -75,7 +75,7 @@ plt.tight_layout()
 fig.savefig("grafici/02_delta_ore.png", dpi=300)
 
 # Grafico 3 – Ore cumulative stimate
-fig, ax = plt.subplots(figsize=(40, 12))
+fig, ax = plt.subplots(figsize=(80,24))
 #ax.plot(df.index, df["cumulative_delta"], marker="o", linestyle="-", color="#2ca02c")
 plot_df = df[(df.index >= df.index.min()) & (df.index <= df.index.max())]
 #ax.plot(plot_df.index, plot_df["hours"], marker="o", linestyle="-", color="#2ca02c")
