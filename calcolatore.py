@@ -64,7 +64,6 @@ plt.tight_layout()
 fig.savefig("grafici/01_snapshot_ore.png", dpi=300)
 
 # Grafico 2 – Delta tra snapshot consecutivi
-'''
 fig, ax = plt.subplots(figsize=(80,24))
 #ax.plot(df.index, df["delta_hours"], marker="o", linestyle="-", color="#ff7f0e")
 plot_df = df[(df.index >= df.index.min()) & (df.index <= df.index.max())]
@@ -77,7 +76,8 @@ ax.set_ylim(*get_y_limits(df["delta_hours"]))
 configure_x_axis(ax)
 plt.tight_layout()
 fig.savefig("grafici/02_delta_ore.png", dpi=300)
-'''
+
+# Grafico 2 migliorato – Delta tra snapshot consecutivi con barre colorate
 fig, ax = plt.subplots(figsize=(80, 24))
 colors = df["delta_hours"].apply(lambda x: "#2ca02c" if x > 0 else "#d62728")
 ax.bar(df.index, df["delta_hours"], color=colors, width=0.03)
@@ -90,7 +90,7 @@ plt.tight_layout()
 fig.savefig("grafici/02_delta_ore_migliorato.png", dpi=300)
 
 # Grafico 3 – Ore cumulative stimate
-'''fig, ax = plt.subplots(figsize=(80,24))
+fig, ax = plt.subplots(figsize=(80,24))
 #ax.plot(df.index, df["cumulative_delta"], marker="o", linestyle="-", color="#2ca02c")
 plot_df = df[(df.index >= df.index.min()) & (df.index <= df.index.max())]
 #ax.plot(plot_df.index, plot_df["hours"], marker="o", linestyle="-", color="#2ca02c")
@@ -102,7 +102,8 @@ ax.set_ylim(*get_y_limits(df["cumulative_delta"]))
 configure_x_axis(ax)
 plt.tight_layout()
 fig.savefig("grafici/03_delta_cumulativo.png", dpi=300)
-'''
+
+# Grafico 3 migliorato – Ore cumulative stimate con annotazione finale
 fig, ax = plt.subplots(figsize=(80, 24))
 ax.plot(df.index, df["cumulative_delta"], marker="o", linestyle="-", color="#2ca02c", linewidth=3,markersize=3)
 ax.set_title("Tempo di gioco cumulativo stimato dalle variazioni")
@@ -110,7 +111,6 @@ ax.set_ylabel("Ore totali aggiunte")
 ax.axhline(0, color="gray", linestyle="--", linewidth=0.8)
 ax.set_ylim(*get_y_limits(df["cumulative_delta"]))
 configure_x_axis(ax)
-
 # Annotazione finale
 final_value = df["cumulative_delta"].iloc[-1]
 final_time = df.index[-1]
