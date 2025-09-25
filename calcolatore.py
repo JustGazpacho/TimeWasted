@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.dates import DateFormatter, DayLocator, HourLocator
 from datetime import timedelta
+import math
 import os
 import json
 import locale
@@ -41,15 +42,23 @@ def get_y_limits(series, margin=0.05):
     pad = (y_max - y_min) * margin
     return y_min - pad, y_max + pad
 
-# Funzione standard per configurare asse X con griglia precisa
-def configure_x_axis(ax):
+# Funzione per configurare gli assi della griglia
+def configure_axes(ax):
+    # Asse X
     ax.set_xlim(x_min, x_max)
     ax.xaxis.set_major_locator(DayLocator(interval=1))             # griglia ogni giorno a mezzanotte
-    ax.xaxis.set_minor_locator(HourLocator(interval=6))            # griglia leggera ogni 6 ore
+    #ax.xaxis.set_minor_locator(DayLocator(interval=4))
+    ax.xaxis.set_minor_locator(HourLocator(byhour=[0, 6, 12, 18]))  # griglia leggera ogni 6 ore
     ax.xaxis.set_major_formatter(x_fmt)
     ax.tick_params(axis='x', rotation=0)  # verticale per evitare sovrapposizione
-    ax.grid(which="major", axis='x', alpha=0.3)
-    ax.grid(which="minor", axis='x', linestyle=":", alpha=0.15)
+    ax.grid(which="major", axis='x', alpha=0.5)
+    ax.grid(which="minor", axis='x', linestyle=":", alpha=0.35)
+
+    # Asse Y
+    ax.yaxis.set_major_locator(plt.MaxNLocator(math.ceil(df["hours"].max() / 10))) # numero divisibile per 10 più grande più vicino
+    ax.yaxis.set_minor_locator(plt.MaxNLocator(math.ceil(df["hours"].max() / 5)))
+    ax.grid(which="major", axis='y', alpha=0.5)
+    ax.grid(which="minor", axis='y', linestyle=":", alpha=0.35)
 
 # Grafico 1 – Ore registrate da Steam
 fig, ax = plt.subplots(figsize=(80,24))
@@ -59,7 +68,7 @@ ax.plot(plot_df.index, plot_df["hours"], marker="o", linestyle="-", color="#1f77
 ax.set_title("Ore registrate (Steam: ultime 2 settimane)")
 ax.set_ylabel("Ore totali")
 ax.set_ylim(*get_y_limits(df["hours"]))
-configure_x_axis(ax)
+configure_axes(ax)
 plt.tight_layout()
 fig.savefig("grafici/01_snapshot_ore.png", dpi=300)
 
@@ -73,7 +82,7 @@ ax.set_title("Differenza di ore tra snapshot consecutivi")
 ax.set_ylabel("Δ ore")
 ax.axhline(0, color="gray", linestyle="--", linewidth=0.8)
 ax.set_ylim(*get_y_limits(df["delta_hours"]))
-configure_x_axis(ax)
+configure_axes(ax)
 plt.tight_layout()
 fig.savefig("grafici/02_delta_ore.png", dpi=300)
 
@@ -85,7 +94,7 @@ ax.set_title("Differenza di ore tra snapshot consecutivi")
 ax.set_ylabel("Δ ore")
 ax.axhline(0, color="gray", linestyle="--", linewidth=0.8)
 ax.set_ylim(*get_y_limits(df["delta_hours"]))
-configure_x_axis(ax)
+configure_axes(ax)
 plt.tight_layout()
 fig.savefig("grafici/02_delta_ore_migliorato.png", dpi=300)
 
@@ -99,7 +108,7 @@ ax.set_title("Tempo di gioco cumulativo stimato dalle variazioni")
 ax.set_ylabel("Ore totali aggiunte")
 ax.axhline(0, color="gray", linestyle="--", linewidth=0.8)
 ax.set_ylim(*get_y_limits(df["cumulative_delta"]))
-configure_x_axis(ax)
+configure_axes(ax)
 plt.tight_layout()
 fig.savefig("grafici/03_delta_cumulativo.png", dpi=300)
 
@@ -110,7 +119,7 @@ ax.set_title("Tempo di gioco cumulativo stimato dalle variazioni")
 ax.set_ylabel("Ore totali aggiunte")
 ax.axhline(0, color="gray", linestyle="--", linewidth=0.8)
 ax.set_ylim(*get_y_limits(df["cumulative_delta"]))
-configure_x_axis(ax)
+configure_axes(ax)
 # Annotazione finale
 final_value = df["cumulative_delta"].iloc[-1]
 final_time = df.index[-1]
@@ -150,16 +159,8 @@ for (year, month), group in df.groupby(["year", "month"]):
     #ax.set_title(f"Ore registrate – {group.index[0].strftime('%B %Y')}")
     ax.set_title(f"Ore registrate – {group.index[0].strftime('%B %Y')}")
     ax.set_ylabel("Ore totali")
-    ax.set_ylim(*get_y_limits(group["hours"]))
-    
-    # Configura asse X con limiti personalizzati
-    ax.set_xlim(x_min, x_max)
-    ax.xaxis.set_major_locator(DayLocator(interval=1))
-    ax.xaxis.set_minor_locator(HourLocator(interval=6))
-    ax.xaxis.set_major_formatter(DateFormatter("%d/%m\n%H:%M"))
-    ax.tick_params(axis='x', rotation=0)
-    ax.grid(which="major", axis='x', alpha=0.3)
-    ax.grid(which="minor", axis='x', linestyle=":", alpha=0.15)
+    ax.set_ylim(*get_y_limits(df["hours"]))
+    configure_axes(ax)
 
     plt.tight_layout()
     filename = f"grafici/AnalisiMensile/{year}_{month:02d}_ore_mensili.png"
