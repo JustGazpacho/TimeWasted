@@ -65,6 +65,7 @@
   {"timestamp": "2025-09-10 18:43", "hours": 59.3},
   {"timestamp": "2025-09-11 19:56", "hours": 61.1},
   {"timestamp": "2025-09-12 23:05", "hours": 69.6},
+  {"timestamp": "2025-09-13 21:58", "hours": 75.4},
   {"timestamp": "2025-09-14 23:33", "hours": 80},
   {"timestamp": "2025-09-15 17:55", "hours": 81.1},
   {"timestamp": "2025-09-16 23:12", "hours": 81},
@@ -84,5 +85,15 @@
   {"timestamp": "2025-09-26 12:27", "hours": 62.7},
   {"timestamp": "2025-09-27 15:49", "hours": 58.9},
   {"timestamp": "2025-09-27 21:15", "hours": 60.3},
-  {"timestamp": "2025-09-27 23:45", "hours": 59.8}
+  {"timestamp": "2025-09-27 23:45", "hours": 59.8},
+  {"timestamp": "2025-09-28 12:56", "hours": 60.3},
+  {"timestamp": "2025-09-28 20:29", "hours": 61.2},
+  {"timestamp": "2025-09-29 20:27", "hours": 54.5},
+  {"timestamp": "2025-09-30 10:26", "hours": 52.6},
+  {"timestamp": "2025-09-30 20:37", "hours": 50.6},
+  {"timestamp": "2025-10-01 6:29", "hours": 49.1},
+  {"timestamp": "2025-10-01 20:29", "hours": 40},
+  {"timestamp": "2025-10-02 18:27", "hours": 29.7},
+  {"timestamp": "2025-10-03 09:46", "hours": 27.1},
+  {"timestamp": "2025-10-03 23:43", "hours": 27.1}
 ]
